@@ -3,69 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>I WANT TO SAY YOU SOMETHING 👇</title>
+<title>Love Confession</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;1,400&display=swap');
-  * {margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif;}
-  body, html {
-    height:100%; width:100%; overflow:hidden; background:#000; color:#fff;
-    display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative;
+  /* General reset */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Arial', sans-serif;
+    background: #0d0d1a;
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    padding: 20px;
   }
 
-  /* Stars background */
-  .stars, .stars2, .stars3 {
-    position:absolute; top:0; left:0; width:100%; height:100%;
-    background-repeat: repeat; z-index:-1;
-    animation: moveStars 50s linear infinite;
+  /* Twinkling stars background */
+  body::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(white 1px, transparent 1px) repeat;
+    background-size: 20px 20px;
+    animation: twinkle 10s linear infinite;
+    z-index: -1;
   }
-  .stars { background: transparent url('https://i.ibb.co/yhQkXq6/star.png') repeat; animation-duration: 100s; opacity:0.6;}
-  .stars2 { background: transparent url('https://i.ibb.co/26PZCkJ/star.png') repeat; animation-duration: 150s; opacity:0.4;}
-  .stars3 { background: transparent url('https://i.ibb.co/Jp5jqcQ/star.png') repeat; animation-duration: 200s; opacity:0.2;}
-  @keyframes moveStars { from {background-position:0 0;} to {background-position:10000px 10000px;} }
 
-  h1, h2, h3, p { text-align:center; }
+  @keyframes twinkle {
+    0%, 100% { transform: translate(0,0); opacity: 0.8; }
+    50% { transform: translate(-50px,50px); opacity: 1; }
+  }
+
+  /* Container for messages */
+  #container {
+    z-index: 1;
+    max-width: 500px;
+    width: 100%;
+  }
+
   button {
-    background: #ff4da6; border:none; color:white; padding:12px 25px;
-    margin:15px; border-radius:25px; font-size:18px; cursor:pointer; transition:0.3s;
+    padding: 10px 20px;
+    font-size: 18px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+    background-color: #ff3366;
+    color: white;
+    transition: 0.3s;
   }
-  button:hover { background:#ff66b2; transform:scale(1.05); }
-  .hidden { display:none; }
 
-  /* Centered container */
-  #mainContainer { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
-
-  /* Popup Love Letter */
-  #lovePopup {
-    position:fixed; top:50%; left:50%; transform:translate(-50%, -50%) scale(0);
-    background: rgba(0,0,0,0.95); padding:30px; border-radius:20px; border:2px solid #ff4da6;
-    text-align:center; max-width:90%; z-index:10; transition:0.5s;
-    box-shadow: 0 0 30px #ff4da6;
+  button:hover {
+    background-color: #ff6699;
   }
-  #lovePopup.show { transform:translate(-50%, -50%) scale(1); }
 
-  /* Chat box */
-  #chatSection { display:flex; flex-direction:column; align-items:center; margin-top:20px; }
-  #chat-box {
-    width:90%; max-width:400px; height:300px; background:rgba(255,255,255,0.05); border-radius:15px;
-    padding:10px; overflow-y:auto; display:flex; flex-direction:column; align-items:center; text-align:center;
+  .typewriter {
+    display: inline-block;
+    overflow: hidden;
+    border-right: 2px solid #ff3366;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    animation: caret 0.75s steps(1) infinite;
   }
-  .msg { margin:8px 0; padding:8px 12px; border-radius:10px; max-width:80%; opacity:0; animation: fadeIn 0.5s forwards;}
-  .user { background:#ff4da6; color:#fff; align-self:center; }
-  .admin { background:#333; color:#fff; align-self:center; }
-  @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
 
-  /* Admin panel */
-  #adminPanel { position:fixed; inset:0; background:rgba(0,0,0,0.95); display:none; flex-direction:column; align-items:center; justify-content:center; }
-  #loginBox input {margin:10px; padding:8px; border-radius:8px; border:none; text-align:center;}
-  #adminChat { display:none; width:90%; max-width:500px; }
+  @keyframes caret {
+    50% { border-color: transparent; }
+  }
 
-  /* Glow text */
-  .glow { text-shadow: 0 0 10px #ff4da6,0 0 20px #ff4da6,0 0 30px #ff66b2; }
+  .paragraph {
+    margin-top: 20px;
+    font-size: 18px;
+    line-height: 1.6;
+    word-wrap: break-word;
+  }
+
+  /* Yes / No buttons */
+  .choice-btn {
+    display: inline-block;
+    margin: 10px;
+    background-color: #33ccff;
+  }
+
+  /* Admin login overlay */
+  #adminLogin {
+    display: none;
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.9);
+    color: white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    z-index: 10;
+  }
+
+  #adminLogin input {
+    padding: 10px;
+    margin: 10px;
+    border-radius:5px;
+    border:none;
+    width:200px;
+  }
+
+  #adminLogin button {
+    margin-top:10px;
+  }
+
+  /* Messages for admin */
+  #adminPanel {
+    display:none;
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: #111;
+    color: #fff;
+    padding: 20px;
+    overflow-y:auto;
+    z-index:10;
+  }
+
+  #adminPanel h2 {
+    text-align:center;
+    margin-bottom: 20px;
+  }
+
+  .msgItem {
+    background: #222;
+    padding:10px;
+    margin:10px 0;
+    border-radius: 8px;
+  }
 
 </style>
 </head>
 <body>
-  <div class="stars"></div>
+
+<div id="container">
+  <h1>ᔕ ɪ ʟ ᴇ ɴ ᴄ ᴇ  ɪ s  ɴ ᴏ ᴛ  ᴀ ʟ ᴀʏ s  ᴇ ɢ ᴏ,  s ᴏ ᴍ ᴇ ᴛ ɪ ᴍ ᴇ s  ɪ ᴛ  ʜ ɪ ᴅ ᴇ s  ᴀ  ʟ ᴏ ᴛ  ᴏ ꜰ  ᴘ ᴀ ɪ ɴ</h1>
+  <button id="revealBtn">I WANT TO SAY YOU SOMETHING 💌</button>
+</div>
+
+<!-- Admin login overlay -->
+<div id="adminLogin">
+  <h2>Admin Login</h2>
+  <input type="text" id="adminUser" placeholder="Username">
+  <input type="password" id="adminPass" placeholder="Password">
+  <button onclick="adminLoginCheck()">Login</button>
+</div>
+
+<!-- Admin panel -->
+<div id="adminPanel">
+  <h2>Visitor Responses</h2>
+  <div id="messagesList"></div>
+  <button onclick="logoutAdmin()">Logout</button>
+</div>
+
+<script>
+  const container = document.getElementById('container');
+
+  // Reveal button click
+  document.getElementById('revealBtn').addEventListener('click', () => {
+    container.innerHTML = '<div class="typewriter" id="loveMsg"></div>';
+    const msg = 'HEY S 💕 I WANT TO TELL YOU THAT ..... I LOVE YOU 💝';
+    typeWriter(msg, 0, () => {
+      showChoices();
+    });
+  });
+
+  // Typewriter effect
+  function typeWriter(text, i, callback) {
+    if(i < text.length) {
+      document.getElementById('loveMsg').innerHTML += text.charAt(i);
+      setTimeout(() => typeWriter(text, i+1, callback), 80);
+    } else {
+      if(callback) callback();
+    }
+  }
+
+  // Show Yes / No buttons
+  function showChoices() {
+    const choiceHTML = `
+      <div>
+        <button class="choice-btn" onclick="handleChoice('Yes')">Yes</button>
+        <button class="choice-btn" onclick="handleChoice('No')">No</button>
+      </div>
+    `;
+    container.innerHTML += choiceHTML;
+  }
+
+  // Handle user choice
+  function handleChoice(choice) {
+    container.innerHTML = '';
+    if(choice === 'Yes') {
+      const loveLetter = `
+        <p class="paragraph">
+          💌 My dearest S,<br>
+          You make my world brighter every day. I just wanted to tell you that I love you deeply, more than words can express. ❤️
+        </p>
+        <p class="paragraph">Would you like to chat with me?</p>
+        <input type="text" id="userMsg" placeholder="Type your message here">
+        <button onclick="sendMsg()">Send</button>
+      `;
+      container.innerHTML = loveLetter;
+    } else {
+      container.innerHTML = '<p class="paragraph">It\'s okay 😢 Maybe another time...</p>';
+    }
+  }
+
+  // Simulate sending message to admin (stored in localStorage)
+  function sendMsg() {
+    const msg = document.getElementById('userMsg').value;
+    if(msg.trim() === '') return alert('Please type a message!');
+    let messages = JSON.parse(localStorage.getItem('messages') || '[]');
+    messages.push(msg);
+    localStorage.setItem('messages', JSON.stringify(messages));
+    alert('Your message has been sent to admin!');
+    document.getElementById('userMsg').value = '';
+  }
+
+  // Admin login
+  function adminLoginCheck() {
+    const user = document.getElementById('adminUser').value;
+    const pass = document.getElementById('adminPass').value;
+    if(user === 'mtdragon' && pass === 'mtdragon00') {
+      document.getElementById('adminLogin').style.display = 'none';
+      showAdminPanel();
+    } else {
+      alert('Incorrect credentials!');
+    }
+  }
+
+  function showAdminPanel() {
+    document.getElementById('adminPanel').style.display = 'block';
+    const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+    const listDiv = document.getElementById('messagesList');
+    listDiv.innerHTML = '';
+    messages.forEach((msg, idx) => {
+      const div = document.createElement('div');
+      div.className = 'msgItem';
+      div.innerText = msg;
+      listDiv.appendChild(div);
+    });
+  }
+
+  function logoutAdmin() {
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('adminLogin').style.display = 'flex';
+  }
+</script>
+
+</body>
+</html>
   <div class="stars2"></div>
   <div class="stars3"></div>
 
