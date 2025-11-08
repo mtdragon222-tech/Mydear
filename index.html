@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Love Confession</title>
 <style>
-  /* General reset */
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* General Reset */
+  * { margin:0; padding:0; box-sizing:border-box; }
 
   body {
     font-family: 'Arial', sans-serif;
@@ -21,24 +21,7 @@
     padding: 20px;
   }
 
-  /* Twinkling stars background */
-  body::before {
-    content: '';
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(white 1px, transparent 1px) repeat;
-    background-size: 20px 20px;
-    animation: twinkle 10s linear infinite;
-    z-index: -1;
-  }
-
-  @keyframes twinkle {
-    0%, 100% { transform: translate(0,0); opacity: 0.8; }
-    50% { transform: translate(-50px,50px); opacity: 1; }
-  }
-
-  /* Container for messages */
+  /* Container for all content */
   #container {
     z-index: 1;
     max-width: 500px;
@@ -66,6 +49,234 @@
     overflow: hidden;
     border-right: 2px solid #ff3366;
     white-space: pre-wrap;
+    word-wrap: break-word;
+    animation: caret 0.75s steps(1) infinite;
+    margin-top:20px;
+    font-size:18px;
+    text-align:center;
+  }
+
+  @keyframes caret {
+    50% { border-color: transparent; }
+  }
+
+  .paragraph {
+    margin-top: 20px;
+    font-size: 18px;
+    line-height: 1.6;
+    word-wrap: break-word;
+    text-align: center;
+  }
+
+  .choice-btn {
+    display: inline-block;
+    margin: 10px;
+    background-color: #33ccff;
+  }
+
+  /* Admin login overlay */
+  #adminLogin {
+    display: none;
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.9);
+    color: white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    z-index: 10;
+  }
+
+  #adminLogin input {
+    padding: 10px;
+    margin: 10px;
+    border-radius:5px;
+    border:none;
+    width:200px;
+  }
+
+  #adminLogin button {
+    margin-top:10px;
+  }
+
+  #adminPanel {
+    display:none;
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: #111;
+    color: #fff;
+    padding: 20px;
+    overflow-y:auto;
+    z-index:10;
+  }
+
+  #adminPanel h2 {
+    text-align:center;
+    margin-bottom: 20px;
+  }
+
+  .msgItem {
+    background: #222;
+    padding:10px;
+    margin:10px 0;
+    border-radius: 8px;
+    word-wrap: break-word;
+  }
+
+  /* Stars animation */
+  .stars {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top:0; left:0;
+    background: transparent;
+    z-index: -1;
+  }
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 2s infinite alternate;
+  }
+  @keyframes twinkle {
+    from { opacity: 0.2; transform: scale(1);}
+    to { opacity: 1; transform: scale(1.5);}
+  }
+
+</style>
+</head>
+<body>
+
+<div id="container">
+  <h1>ᔕ ɪ ʟ ᴇ ɴ ᴄ ᴇ  ɪ s  ɴ ᴏ ᴛ  ᴀ ʟ ᴀʏ s  ᴇ ɢ ᴏ,  s ᴏ ᴍ ᴇ ᴛ ɪ ᴍ ᴇ s  ɪ ᴛ  ʜ ɪ ᴅ ᴇ s  ᴀ  ʟ ᴏ ᴛ  ᴏ ꜰ  ᴘ ᴀ ɪ ɴ</h1>
+  <button id="revealBtn">I WANT TO SAY YOU SOMETHING 💌</button>
+</div>
+
+<!-- Admin login overlay -->
+<div id="adminLogin">
+  <h2>Admin Login</h2>
+  <input type="text" id="adminUser" placeholder="Username">
+  <input type="password" id="adminPass" placeholder="Password">
+  <button onclick="adminLoginCheck()">Login</button>
+</div>
+
+<!-- Admin panel -->
+<div id="adminPanel">
+  <h2>Visitor Responses</h2>
+  <div id="messagesList"></div>
+  <button onclick="logoutAdmin()">Logout</button>
+</div>
+
+<!-- Stars container -->
+<div class="stars" id="starsContainer"></div>
+
+<script>
+  const container = document.getElementById('container');
+  const starsContainer = document.getElementById('starsContainer');
+
+  // Generate stars (50 stars)
+  function createStars() {
+    for(let i=0;i<50;i++){
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.top = Math.random()*100 + '%';
+      star.style.left = Math.random()*100 + '%';
+      star.style.animationDuration = 1 + Math.random()*3 + 's';
+      starsContainer.appendChild(star);
+    }
+  }
+
+  document.getElementById('revealBtn').addEventListener('click', () => {
+    // Add stars animation after click
+    createStars();
+
+    container.innerHTML = '<div class="typewriter" id="loveMsg"></div>';
+    const msg = 'HEY S 💕 I WANT TO TELL YOU THAT ..... I LOVE YOU 💝';
+    typeWriter(msg,0,() => {
+      showChoices();
+    });
+  });
+
+  function typeWriter(text,i,callback){
+    if(i < text.length){
+      document.getElementById('loveMsg').innerHTML += text.charAt(i);
+      setTimeout(()=>typeWriter(text,i+1,callback),80);
+    } else {
+      if(callback) callback();
+    }
+  }
+
+  function showChoices(){
+    const choiceHTML = `
+      <div>
+        <button class="choice-btn" onclick="handleChoice('Yes')">Yes</button>
+        <button class="choice-btn" onclick="handleChoice('No')">No</button>
+      </div>
+    `;
+    container.innerHTML += choiceHTML;
+  }
+
+  function handleChoice(choice){
+    container.innerHTML = '';
+    if(choice==='Yes'){
+      const loveLetter = `
+        <p class="paragraph">
+          💌 My dearest S,<br>
+          You make my world brighter every day. I just wanted to tell you that I love you deeply, more than words can express. ❤️
+        </p>
+        <p class="paragraph">Would you like to chat with me?</p>
+        <input type="text" id="userMsg" placeholder="Type your message here">
+        <button onclick="sendMsg()">Send</button>
+      `;
+      container.innerHTML = loveLetter;
+    } else {
+      container.innerHTML = '<p class="paragraph">It\'s okay 😢 Maybe another time...</p>';
+    }
+  }
+
+  function sendMsg(){
+    const msg = document.getElementById('userMsg').value;
+    if(msg.trim()==='') return alert('Please type a message!');
+    let messages = JSON.parse(localStorage.getItem('messages')||'[]');
+    messages.push(msg);
+    localStorage.setItem('messages',JSON.stringify(messages));
+    alert('Your message has been sent to admin!');
+    document.getElementById('userMsg').value = '';
+  }
+
+  function adminLoginCheck(){
+    const user = document.getElementById('adminUser').value;
+    const pass = document.getElementById('adminPass').value;
+    if(user==='mtdragon' && pass==='mtdragon00'){
+      document.getElementById('adminLogin').style.display='none';
+      showAdminPanel();
+    } else alert('Incorrect credentials!');
+  }
+
+  function showAdminPanel(){
+    document.getElementById('adminPanel').style.display='block';
+    const messages = JSON.parse(localStorage.getItem('messages')||'[]');
+    const listDiv = document.getElementById('messagesList');
+    listDiv.innerHTML = '';
+    messages.forEach(msg=>{
+      const div=document.createElement('div');
+      div.className='msgItem';
+      div.innerText=msg;
+      listDiv.appendChild(div);
+    });
+  }
+
+  function logoutAdmin(){
+    document.getElementById('adminPanel').style.display='none';
+    document.getElementById('adminLogin').style.display='flex';
+  }
+</script>
+
+</body>
+</html>
     word-wrap: break-word;
     animation: caret 0.75s steps(1) infinite;
   }
