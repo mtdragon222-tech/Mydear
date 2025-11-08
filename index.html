@@ -5,67 +5,256 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>I WANT TO SAY YOU SOMETHING 👇</title>
 <style>
-  * {margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif;}
-  body {
-    background: radial-gradient(circle at top, #111, #000);
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;1,400&display=swap');
+  * {margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif;}
+  body, html {
+    height:100%; width:100%; overflow:hidden; background:#000; color:#fff;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative;
   }
-  h1, h2, h3, p { text-align: center; }
-  .hidden { display: none; }
+
+  /* Stars background */
+  .stars, .stars2, .stars3 {
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    background-repeat: repeat; z-index:-1;
+    animation: moveStars 50s linear infinite;
+  }
+  .stars { background: transparent url('https://i.ibb.co/yhQkXq6/star.png') repeat; animation-duration: 100s; opacity:0.6;}
+  .stars2 { background: transparent url('https://i.ibb.co/26PZCkJ/star.png') repeat; animation-duration: 150s; opacity:0.4;}
+  .stars3 { background: transparent url('https://i.ibb.co/Jp5jqcQ/star.png') repeat; animation-duration: 200s; opacity:0.2;}
+  @keyframes moveStars { from {background-position:0 0;} to {background-position:10000px 10000px;} }
+
+  h1, h2, h3, p { text-align:center; }
   button {
-    background: #ff4da6;
-    border: none;
-    color: white;
-    padding: 12px 25px;
-    margin-top: 20px;
-    border-radius: 25px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: 0.3s;
+    background: #ff4da6; border:none; color:white; padding:12px 25px;
+    margin:15px; border-radius:25px; font-size:18px; cursor:pointer; transition:0.3s;
   }
-  button:hover { background: #ff66b2; transform: scale(1.05); }
-  .typewriter {
-    overflow: hidden;
-    border-right: .15em solid #ff4da6;
-    white-space: nowrap;
-    animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
-    font-size: 20px;
-    font-style: italic;
-    text-align: center;
-    max-width: 90%;
+  button:hover { background:#ff66b2; transform:scale(1.05); }
+  .hidden { display:none; }
+
+  /* Centered container */
+  #mainContainer { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+
+  /* Popup Love Letter */
+  #lovePopup {
+    position:fixed; top:50%; left:50%; transform:translate(-50%, -50%) scale(0);
+    background: rgba(0,0,0,0.95); padding:30px; border-radius:20px; border:2px solid #ff4da6;
+    text-align:center; max-width:90%; z-index:10; transition:0.5s;
+    box-shadow: 0 0 30px #ff4da6;
   }
-  @keyframes typing { from { width: 0 } to { width: 100% } }
-  @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #ff4da6; } }
+  #lovePopup.show { transform:translate(-50%, -50%) scale(1); }
+
+  /* Chat box */
+  #chatSection { display:flex; flex-direction:column; align-items:center; margin-top:20px; }
   #chat-box {
-    border: 1px solid #444;
-    border-radius: 15px;
-    width: 90%;
-    max-width: 400px;
-    height: 300px;
-    overflow-y: auto;
-    background: rgba(255,255,255,0.05);
-    padding: 10px;
-    margin-top: 20px;
+    width:90%; max-width:400px; height:300px; background:rgba(255,255,255,0.05); border-radius:15px;
+    padding:10px; overflow-y:auto; display:flex; flex-direction:column; align-items:center; text-align:center;
   }
-  .msg {
-    margin: 8px 0;
-    padding: 8px 12px;
-    border-radius: 10px;
-    display: inline-block;
-    max-width: 80%;
-  }
-  .user { background: #ff4da6; color: #fff; align-self: flex-end; }
-  .admin { background: #333; color: #fff; align-self: flex-start; }
-  #adminPanel { background: rgba(0,0,0,0.95); position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; }
-  #adminMessages { width: 90%; max-width: 500px; height: 300px; overflow-y: auto; border: 1px solid #555; padding: 10px; background: #111; border-radius: 15px; margin-bottom: 20px; }
-  .login-box input {margin: 10px; padding: 8px; border-radius: 8px; border: none; text-align: center;}
-  #adminBtn { position: fixed; bottom: 10px; right: 10px; font-size: 14px; background: #333; }
+  .msg { margin:8px 0; padding:8px 12px; border-radius:10px; max-width:80%; opacity:0; animation: fadeIn 0.5s forwards;}
+  .user { background:#ff4da6; color:#fff; align-self:center; }
+  .admin { background:#333; color:#fff; align-self:center; }
+  @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+
+  /* Admin panel */
+  #adminPanel { position:fixed; inset:0; background:rgba(0,0,0,0.95); display:none; flex-direction:column; align-items:center; justify-content:center; }
+  #loginBox input {margin:10px; padding:8px; border-radius:8px; border:none; text-align:center;}
+  #adminChat { display:none; width:90%; max-width:500px; }
+
+  /* Glow text */
+  .glow { text-shadow: 0 0 10px #ff4da6,0 0 20px #ff4da6,0 0 30px #ff66b2; }
+
+</style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="stars2"></div>
+  <div class="stars3"></div>
+
+  <div id="mainContainer">
+    <h1 id="start">I WANT TO SAY YOU SOMETHING 👇</h1>
+    <button id="revealBtn">💌 Reveal</button>
+
+    <div id="loveSection" class="hidden">
+      <h2 class="glow">HEY S 💕 I WANT TO TELL YOU THAT ..... I LOVE YOU 💝</h2>
+      <h3>Do you love me?</h3>
+      <button id="yesBtn">❤️ Yes</button>
+      <button id="noBtn">💔 No</button>
+    </div>
+
+    <div id="nameInput" class="hidden">
+      <h3>What’s your name, love? 💕</h3>
+      <input type="text" id="loverName" placeholder="Enter your name">
+      <button id="submitName">💌 Continue</button>
+    </div>
+
+    <div id="chatPrompt" class="hidden">
+      <h3>Would you like to chat with me? 💬</h3>
+      <button id="chatYes">💬 Yes</button>
+      <button id="chatNo">💔 No</button>
+    </div>
+
+    <div id="chatSection" class="hidden">
+      <div id="chat-box"></div>
+      <input type="text" id="chatInput" placeholder="Type your message..." />
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+
+  <!-- Popup Love Letter -->
+  <div id="lovePopup">
+    <p>
+      ᴍʏ ʜᴇᴀʀᴛ ɪs ɴᴏᴛ ᴊᴜsᴛ ᴀ ᴘʟᴀᴄᴇ ᴛʜᴀᴛ ʙᴇᴀᴛs, ɪᴛ’s ᴀ ʜᴏᴍᴇ ᴛʜᴀᴛ ʜᴀs ʏᴏᴜ 💕<br>
+      ɪ ᴅᴏɴ’ᴛ ᴡᴀɴᴛ ᴛʜᴇ ᴡᴏʀʟᴅ, ɪ ᴊᴜsᴛ ᴡᴀɴᴛ ʏᴏᴜʀ ʜᴀɴᴅ ɪɴ ᴍɪɴᴇ 🌙<br>
+      ᴇᴠᴇʀʏ sɪʟᴇɴᴄᴇ sᴘᴇᴀᴋs ʏᴏᴜʀ ɴᴀᴍᴇ, ᴇᴠᴇʀʏ ʙʀᴇᴀᴛʜ ᴡʜɪsᴘᴇʀs “ɪ ʟᴏᴠᴇ ʏᴏᴜ” 💖
+    </p>
+    <button id="closePopup">Continue 💫</button>
+  </div>
+
+  <button id="adminBtn">🔐 Admin Login</button>
+
+  <!-- Admin Panel -->
+  <div id="adminPanel">
+    <div id="loginBox">
+      <h3>Admin Login</h3>
+      <input id="adminUser" placeholder="Username">
+      <input id="adminPass" placeholder="Password" type="password">
+      <button id="loginSubmit">Login</button>
+    </div>
+    <div id="adminChat">
+      <h3>Admin Chat Panel</h3>
+      <div id="adminMessages" style="height:300px; overflow-y:auto; background:#111; border-radius:15px; padding:10px; margin-bottom:10px;"></div>
+      <input type="text" id="adminMsg" placeholder="Type reply...">
+      <button id="adminSend">Send</button>
+      <button onclick="logoutAdmin()">Logout</button>
+    </div>
+  </div>
+
+<script type="module">
+  // ===== Firebase Setup =====
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_DOMAIN.firebaseapp.com",
+    databaseURL: "https://YOUR_DOMAIN.firebaseio.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_BUCKET.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const msgRef = ref(db, "messages");
+
+  // ===== Elements =====
+  const revealBtn = document.getElementById("revealBtn");
+  const start = document.getElementById("start");
+  const loveSection = document.getElementById("loveSection");
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
+  const nameInput = document.getElementById("nameInput");
+  const loverName = document.getElementById("loverName");
+  const submitName = document.getElementById("submitName");
+  const lovePopup = document.getElementById("lovePopup");
+  const closePopup = document.getElementById("closePopup");
+  const chatPrompt = document.getElementById("chatPrompt");
+  const chatYes = document.getElementById("chatYes");
+  const chatNo = document.getElementById("chatNo");
+  const chatSection = document.getElementById("chatSection");
+  const chatBox = document.getElementById("chat-box");
+  const chatInput = document.getElementById("chatInput");
+  const sendBtn = document.getElementById("sendBtn");
+
+  const adminBtn = document.getElementById("adminBtn");
+  const adminPanel = document.getElementById("adminPanel");
+  const loginBox = document.getElementById("loginBox");
+  const adminChat = document.getElementById("adminChat");
+  const adminUser = document.getElementById("adminUser");
+  const adminPass = document.getElementById("adminPass");
+  const loginSubmit = document.getElementById("loginSubmit");
+  const adminMessages = document.getElementById("adminMessages");
+  const adminMsg = document.getElementById("adminMsg");
+  const adminSend = document.getElementById("adminSend");
+
+  // ===== Flow =====
+  revealBtn.onclick = () => {
+    start.remove();
+    revealBtn.remove();
+    loveSection.classList.remove("hidden");
+  };
+
+  yesBtn.onclick = () => {
+    loveSection.classList.add("hidden");
+    lovePopup.classList.add("show");
+  };
+
+  closePopup.onclick = () => {
+    lovePopup.classList.remove("show");
+    nameInput.classList.remove("hidden");
+  };
+
+  noBtn.onclick = () => {
+    loveSection.innerHTML = "<h3>ɪᴛ’s ᴏᴋᴀʏ 💔 ᴍᴀʏʙᴇ sᴏᴍᴇᴅᴀʏ...</h3>";
+  };
+
+  submitName.onclick = () => {
+    if (loverName.value.trim() !== "") {
+      nameInput.classList.add("hidden");
+      chatPrompt.classList.remove("hidden");
+    }
+  };
+
+  chatYes.onclick = () => {
+    chatPrompt.classList.add("hidden");
+    chatSection.classList.remove("hidden");
+  };
+
+  chatNo.onclick = () => {
+    chatPrompt.innerHTML = "<h3>ɪ ᴜɴᴅᴇʀsᴛᴀɴᴅ 💔 ᴍᴀʏʙᴇ sᴏᴍᴇᴅᴀʏ...</h3>";
+  };
+
+  // ===== Chat =====
+  sendBtn.onclick = () => {
+    const msg = chatInput.value.trim();
+    if(msg) { push(msgRef, {sender:"user", text:msg}); chatInput.value=""; }
+  };
+  onChildAdded(msgRef, (data)=>{
+    const msg = data.val();
+    const div = document.createElement("div");
+    div.className = "msg " + (msg.sender==="user"?"user":"admin");
+    div.textContent = msg.text;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    if(adminMessages){
+      const div2 = document.createElement("div");
+      div2.className = "msg " + (msg.sender==="user"?"user":"admin");
+      div2.textContent = msg.text;
+      adminMessages.appendChild(div2);
+      adminMessages.scrollTop = adminMessages.scrollHeight;
+    }
+  });
+
+  // ===== Admin =====
+  adminBtn.onclick = ()=>adminPanel.style.display="flex";
+  loginSubmit.onclick = ()=>{
+    if(adminUser.value==="mtdragon" && adminPass.value==="mtdragon00"){
+      loginBox.style.display="none";
+      adminChat.style.display="flex";
+    } else alert("Incorrect login!");
+  };
+  adminSend.onclick = ()=>{
+    const msg = adminMsg.value.trim();
+    if(msg){ push(msgRef, {sender:"admin", text:msg}); adminMsg.value=""; }
+  };
+  window.logoutAdmin = ()=>{
+    adminChat.style.display="none";
+    loginBox.style.display="flex";
+    adminPanel.style.display="none";
+  };
+</script>
+</body>
+</html>
 </style>
 </head>
 <body>
